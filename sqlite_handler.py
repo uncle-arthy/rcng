@@ -77,20 +77,23 @@ class DBHandler(object):
     def get_participants_summary(self):
         participants = []
 
-        qry = self.cur.execute('SELECT participants.id, dogs.name, categories.name FROM participants INNER JOIN dogs '
-                               'ON participants.dog_id = dogs.id INNER JOIN categories ON participants.category_id = '
-                               'categories.id')
+        qry = self.cur.execute('''SELECT participants.id, dogs.name, categories.name, 
+        participants.prel_run 
+        FROM participants INNER JOIN dogs ON participants.dog_id = dogs.id 
+        INNER JOIN categories ON participants.category_id = categories.id''')
 
         for line in qry.fetchall():
-            participants.append((line[0], line[1], line[2], '-', '-', '-', '-', '-', '-', '-', '-', '-'))
+            participants.append((line[0], line[1], line[2], line[3], '-', '-', '-', '-', '-', '-', '-', '-'))
 
         return participants
 
     def get_next_prel_run_number(self):
         qry = self.cur.execute('SELECT MAX(DISTINCT prel_run) FROM participants')
 
-        if qry.fetchone()[0]:
-            return qry.fetchone()[0] + 1
+        cur_max = qry.fetchone()[0]
+
+        if cur_max:
+            return cur_max + 1
         else:
             return 1
 
@@ -106,3 +109,40 @@ class DBHandler(object):
             names_ids.append((line[0], line[1]))
 
         return names_ids
+
+    def register_prel_run(self, run_dict):
+        run_number = run_dict['num']
+
+        try:
+            if run_dict['first_id'] != 0:
+                self.cur.execute('''UPDATE participants
+                SET prel_run = ?, prel_jacket = 1
+                WHERE id = ?
+                ''', (run_number, run_dict['first_id']))
+
+            if run_dict['second_id'] != 0:
+                self.cur.execute('''UPDATE participants
+                SET prel_run = ?, prel_jacket = 2
+                WHERE id = ?
+                ''', (run_number, run_dict['second_id']))
+
+            if run_dict['third_id'] != 0:
+                self.cur.execute('''UPDATE participants
+                SET prel_run = ?, prel_jacket = 3
+                WHERE id = ?
+                ''', (run_number, run_dict['third_id']))
+
+            if run_dict['fourth_id'] != 0:
+                self.cur.execute('''UPDATE participants
+                SET prel_run = ?, prel_jacket = 4
+                WHERE id = ?
+                ''', (run_number, run_dict['fourth_id']))
+
+            self.conn.commit()
+            return True
+        except:
+            return False
+
+    def get_prel_runs_info(self):
+        qry = self.cur.execute('''SELECT participants.id, dogs.name, categories.name
+        ''')

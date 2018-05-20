@@ -38,6 +38,9 @@ class RSNG(QtWidgets.QMainWindow):
 
     def close_program(self):
         print("Finish all")
+        if self.db:
+            self.db.commit_close()
+        self.close()
 
     def about_window(self):
         print('Here goes About...')

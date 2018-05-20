@@ -22,6 +22,11 @@ class TriWindow(QtWidgets.QWidget):
         print('Add Prel')
         self.add_prel_window = AddPrelRunWindow(self.db)
         self.add_prel_window.show()
+        # self.update_prel_runs()
+        self.add_prel_window.wannaclose.connect(self.update_prel_runs)
+
+    def update_prel_runs(self):
+        print('Updating Prel runs...')
 
 
 if __name__ == '__main__':

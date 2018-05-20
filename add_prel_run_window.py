@@ -8,6 +8,8 @@ from PyQt5 import QtCore, QtWidgets, QtGui, uic
 
 
 class AddPrelRunWindow(QtWidgets.QWidget):
+    wannaclose = QtCore.pyqtSignal()
+
     def __init__(self, dbhandler, parent=None, *args, **kwargs):
         super().__init__(parent=parent)
 
@@ -59,6 +61,13 @@ class AddPrelRunWindow(QtWidgets.QWidget):
         run['fourth_id'] = self.cb_fourth_dog.currentData()
 
         print(run)
+        if self.db.register_prel_run(run):
+            print('Run added')
+            self.wannaclose.emit()
+            self.close()
+        else:
+            print('Something wrong. Run not added.')
+
 
 
 if __name__ == '__main__':

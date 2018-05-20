@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>register_prel_run</class>
  <widget class="QWidget" name="register_prel_run">
+  <property name="windowModality">
+   <enum>Qt::WindowModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
