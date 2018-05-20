@@ -40,13 +40,15 @@ class SummaryWindow(QtWidgets.QWidget):
         self.summaryTable.setRowCount(len(sum_list))
 
         for i, participant in enumerate(sum_list):
-            print(f'№ {i} - {participant[1]} ({participant[0]}) - {participant[2]}')
             for j in range(12):
                 self.summaryTable.setItem(i, j, QtWidgets.QTableWidgetItem(str(participant[j])))
                 self.summaryTable.item(i, j).setTextAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
             self.summaryTable.item(i, 1).setTextAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
             self.summaryTable.item(i, 2).setTextAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
-
+            if participant[3] is None:
+                self.summaryTable.setItem(i, 3, QtWidgets.QTableWidgetItem(' '))
+            if participant[4] is None:
+                self.summaryTable.setItem(i, 4, QtWidgets.QTableWidgetItem(' '))
 
 
 

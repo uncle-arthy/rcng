@@ -92,7 +92,7 @@
    <item row="2" column="1">
     <widget class="QLabel" name="lbl_first_name">
      <property name="text">
-      <string>First dog</string>
+      <string>---</string>
      </property>
      <property name="margin">
       <number>0</number>
@@ -121,7 +121,7 @@
    <item row="3" column="1">
     <widget class="QLabel" name="lbl_second_name">
      <property name="text">
-      <string>Second dog</string>
+      <string>---</string>
      </property>
      <property name="indent">
       <number>10</number>
@@ -163,7 +163,7 @@
    <item row="4" column="1">
     <widget class="QLabel" name="lbl_third_name">
      <property name="text">
-      <string>Third dog</string>
+      <string>---</string>
      </property>
      <property name="indent">
       <number>10</number>
@@ -189,7 +189,7 @@
    <item row="5" column="1">
     <widget class="QLabel" name="lbl_fourth_name">
      <property name="text">
-      <string>Fourth dog</string>
+      <string>---</string>
      </property>
      <property name="indent">
       <number>10</number>

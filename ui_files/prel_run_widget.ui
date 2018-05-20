@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>144</height>
+    <height>146</height>
    </rect>
   </property>
   <property name="font">
@@ -111,7 +111,7 @@
         <item row="4" column="1">
          <widget class="QLabel" name="lbl_fourth_name">
           <property name="text">
-           <string>Fourth dog</string>
+           <string>---</string>
           </property>
           <property name="indent">
            <number>10</number>
@@ -131,7 +131,7 @@
         <item row="3" column="1">
          <widget class="QLabel" name="lbl_third_name">
           <property name="text">
-           <string>Third dog</string>
+           <string>---</string>
           </property>
           <property name="indent">
            <number>10</number>
@@ -151,7 +151,7 @@
         <item row="1" column="1">
          <widget class="QLabel" name="lbl_first_name">
           <property name="text">
-           <string>First dog</string>
+           <string>---</string>
           </property>
           <property name="margin">
            <number>0</number>
@@ -196,7 +196,7 @@
         <item row="2" column="1">
          <widget class="QLabel" name="lbl_second_name">
           <property name="text">
-           <string>Second dog</string>
+           <string>---</string>
           </property>
           <property name="indent">
            <number>10</number>
@@ -295,6 +295,26 @@
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QPushButton" name="btn_work_on_run">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="baseSize">
+           <size>
+            <width>18</width>
+            <height>18</height>
+           </size>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>../pix/ic_mode_edit_grey600_18dp.png</normaloff>../pix/ic_mode_edit_grey600_18dp.png</iconset>
           </property>
          </widget>
         </item>

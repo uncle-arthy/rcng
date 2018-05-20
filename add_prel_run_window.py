@@ -60,9 +60,7 @@ class AddPrelRunWindow(QtWidgets.QWidget):
         run['third_id'] = self.cb_third_dog.currentData()
         run['fourth_id'] = self.cb_fourth_dog.currentData()
 
-        print(run)
         if self.db.register_prel_run(run):
-            print('Run added')
             self.wannaclose.emit()
             self.close()
         else:

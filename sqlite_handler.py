@@ -78,12 +78,12 @@ class DBHandler(object):
         participants = []
 
         qry = self.cur.execute('''SELECT participants.id, dogs.name, categories.name, 
-        participants.prel_run 
+        participants.prel_run, participants.prel_time 
         FROM participants INNER JOIN dogs ON participants.dog_id = dogs.id 
         INNER JOIN categories ON participants.category_id = categories.id''')
 
         for line in qry.fetchall():
-            participants.append((line[0], line[1], line[2], line[3], '-', '-', '-', '-', '-', '-', '-', '-'))
+            participants.append((line[0], line[1], line[2], line[3], line[4], '-', '-', '-', '-', '-', '-', '-'))
 
         return participants
 
@@ -116,26 +116,26 @@ class DBHandler(object):
         try:
             if run_dict['first_id'] != 0:
                 self.cur.execute('''UPDATE participants
-                SET prel_run = ?, prel_jacket = 1
-                WHERE id = ?
+                SET prel_run = ?, prel_jacket = 1, prel_result = 1
+                WHERE participants.id = ?
                 ''', (run_number, run_dict['first_id']))
 
             if run_dict['second_id'] != 0:
                 self.cur.execute('''UPDATE participants
-                SET prel_run = ?, prel_jacket = 2
-                WHERE id = ?
+                SET prel_run = ?, prel_jacket = 2, prel_result = 1
+                WHERE participants.id = ?
                 ''', (run_number, run_dict['second_id']))
 
             if run_dict['third_id'] != 0:
                 self.cur.execute('''UPDATE participants
-                SET prel_run = ?, prel_jacket = 3
-                WHERE id = ?
+                SET prel_run = ?, prel_jacket = 3, prel_result = 1
+                WHERE participants.id = ?
                 ''', (run_number, run_dict['third_id']))
 
             if run_dict['fourth_id'] != 0:
                 self.cur.execute('''UPDATE participants
-                SET prel_run = ?, prel_jacket = 4
-                WHERE id = ?
+                SET prel_run = ?, prel_jacket = 4, prel_result = 1
+                WHERE participants.id = ?
                 ''', (run_number, run_dict['fourth_id']))
 
             self.conn.commit()
@@ -144,5 +144,33 @@ class DBHandler(object):
             return False
 
     def get_prel_runs_info(self):
-        qry = self.cur.execute('''SELECT participants.id, dogs.name, categories.name
+        qry = self.cur.execute('''SELECT participants.id, 
+        dogs.name, 
+        categories.name, 
+        participants.prel_run, 
+        participants.prel_jacket, 
+        participants.prel_time,
+        participants.prel_result,
+        participants.prel_comments
+        FROM participants INNER JOIN dogs ON participants.dog_id = dogs.id
+        INNER JOIN categories ON participants.category_id = categories.id
+        WHERE participants.prel_result != 7 
+        ORDER BY participants.prel_jacket
         ''')
+
+        runs_info_list = qry.fetchall()
+
+        return runs_info_list
+
+    def get_participants_by_run_number(self, num):
+        qry = self.cur.execute('''SELECT participants.id, dogs.name 
+        FROM participants INNER JOIN dogs 
+        ON participants.dog_id = dogs.id 
+        WHERE participants.prel_run = ? ORDER BY participants.prel_jacket''', (num, ))
+
+        names_ids = []
+
+        for line in qry.fetchall():
+            names_ids.append((line[0], line[1]))
+
+        return names_ids
