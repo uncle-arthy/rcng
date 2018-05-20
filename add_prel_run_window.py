@@ -17,8 +17,49 @@ class AddPrelRunWindow(QtWidgets.QWidget):
 
         self.update_fields()
 
+        self.btn_add_run.clicked.connect(self.add_run)
+
     def update_fields(self):
         self.inp_run_number.setValue(self.db.get_next_prel_run_number())
+
+        for i, category in self.db.get_categories():
+            self.cb_category.addItem(category, i)
+
+        self.cb_category.activated.connect(self.update_dog_names_from_category)
+
+    def update_dog_names_from_category(self, t):
+        dog_names_list = self.db.get_dog_for_prel_run(t+1)
+
+        for i, name in dog_names_list:
+            print(i, name)
+
+        self.cb_first_dog.clear()
+        self.cb_second_dog.clear()
+        self.cb_third_dog.clear()
+        self.cb_fourth_dog.clear()
+
+        self.cb_first_dog.addItem('', 0)
+        self.cb_second_dog.addItem('', 0)
+        self.cb_third_dog.addItem('', 0)
+        self.cb_fourth_dog.addItem('', 0)
+
+        for i, name in dog_names_list:
+            self.cb_first_dog.addItem(name, i)
+            self.cb_second_dog.addItem(name, i)
+            self.cb_third_dog.addItem(name, i)
+            self.cb_fourth_dog.addItem(name, i)
+
+    def add_run(self):
+        run = {}
+        run['num'] = self.inp_run_number.value()
+        run['cat_id'] = self.cb_category.currentData()
+        run['first_id'] = self.cb_first_dog.currentData()
+        run['second_id'] = self.cb_second_dog.currentData()
+        run['third_id'] = self.cb_third_dog.currentData()
+        run['fourth_id'] = self.cb_fourth_dog.currentData()
+
+        print(run)
+
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)

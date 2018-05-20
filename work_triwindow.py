@@ -4,6 +4,7 @@ __author__ = 'Alexei Evdokimov'
 
 import sys
 from sqlite_handler import DBHandler
+from add_prel_run_window import AddPrelRunWindow
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
 
@@ -19,6 +20,8 @@ class TriWindow(QtWidgets.QWidget):
 
     def add_prel_run(self):
         print('Add Prel')
+        self.add_prel_window = AddPrelRunWindow(self.db)
+        self.add_prel_window.show()
 
 
 if __name__ == '__main__':

@@ -16,9 +16,9 @@ class RSNG(QtWidgets.QMainWindow):
         uic.loadUi('ui_files/main_window.ui', self)
 
         self.actionOpen.triggered.connect(self.openDB)
-        self.actionSummary.triggered.connect(self.showSummary)
-        self.actionExit.triggered.connect(self.closeProgram)
-        self.actionAbout.triggered.connect(self.aboutWindow)
+        self.actionSummary.triggered.connect(self.show_summary)
+        self.actionExit.triggered.connect(self.close_program)
+        self.actionAbout.triggered.connect(self.about_window)
 
     def openDB(self):
         db_file = QtWidgets.QFileDialog.getOpenFileName()
@@ -26,20 +26,20 @@ class RSNG(QtWidgets.QMainWindow):
 
         self.db = DBHandler(db_path)
 
-        self.startWork()
+        self.start_work()
 
-    def startWork(self):
+    def start_work(self):
         triwin = TriWindow(self.db)
         self.setCentralWidget(triwin)
 
-    def showSummary(self):
+    def show_summary(self):
         self.sum_window = SummaryWindow(self.db)
         self.sum_window.show()
 
-    def closeProgram(self):
+    def close_program(self):
         print("Finish all")
 
-    def aboutWindow(self):
+    def about_window(self):
         print('Here goes About...')
 
 

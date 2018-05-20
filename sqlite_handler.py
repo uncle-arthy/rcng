@@ -93,3 +93,16 @@ class DBHandler(object):
             return qry.fetchone()[0] + 1
         else:
             return 1
+
+    def get_dog_for_prel_run(self, cat_id):
+        qry = self.cur.execute('''SELECT participants.id, dogs.name 
+        FROM participants INNER JOIN dogs 
+        ON participants.dog_id = dogs.id 
+        WHERE participants.category_id = ? AND participants.prel_result = 7''', (cat_id, ))
+
+        names_ids = []
+
+        for line in qry.fetchall():
+            names_ids.append((line[0], line[1]))
+
+        return names_ids
