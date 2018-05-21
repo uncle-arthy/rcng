@@ -186,7 +186,7 @@
            <enum>Qt::AutoText</enum>
           </property>
           <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           <set>Qt::AlignCenter</set>
           </property>
           <property name="margin">
            <number>4</number>

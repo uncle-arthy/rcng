@@ -174,3 +174,54 @@ class DBHandler(object):
             names_ids.append((line[0], line[1]))
 
         return names_ids
+
+    def get_statuses(self):
+        qry = self.cur.execute('SELECT * FROM results')
+
+        results = []
+
+        for line in qry.fetchall():
+            results.append((line[0], line[1]))
+
+        return results
+
+    def register_time_prel_run(self, reg_dict):
+        try:
+            self.cur.execute('''UPDATE participants
+            SET prel_time = ?, prel_result = ?
+            WHERE participants.id = ?
+            ''', (reg_dict['time_1'], reg_dict['status_1'], reg_dict['num_1']))
+
+            if reg_dict['num_2'] != 0:
+                self.cur.execute('''UPDATE participants
+            SET prel_time = ?, prel_result = ?
+            WHERE participants.id = ?
+            ''', (reg_dict['time_2'], reg_dict['status_2'], reg_dict['num_2']))
+
+            if reg_dict['num_3'] != 0:
+                self.cur.execute('''UPDATE participants
+            SET prel_time = ?, prel_result = ?
+            WHERE participants.id = ?
+            ''', (reg_dict['time_3'], reg_dict['status_3'], reg_dict['num_3']))
+
+            if reg_dict['num_4'] != 0:
+                self.cur.execute('''UPDATE participants
+            SET prel_time = ?, prel_result = ?
+            WHERE participants.id = ?
+            ''', (reg_dict['time_4'], reg_dict['status_4'], reg_dict['num_4']))
+
+            self.conn.commit()
+            return True
+        except:
+            return False
+
+    def delete_run(self, run_num):
+        try:
+            qry = self.cur.execute('''
+            UPDATE participants SET prel_run = NULL, prel_jacket = NULL, prel_time = NULL,
+            prel_result = 7 WHERE prel_run = ?
+            ''', (run_num, ))
+            self.conn.commit()
+            return True
+        except:
+            return False

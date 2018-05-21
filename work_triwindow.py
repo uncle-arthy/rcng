@@ -34,6 +34,7 @@ class TriWindow(QtWidgets.QWidget):
         self.add_prel_window.wannaclose.connect(self.update_prel_runs)
 
     def update_prel_runs(self):
+        print('update')
         self.prel_runs_frame.destroy()
 
         self.prel_runs_frame = QtWidgets.QFrame()
@@ -58,14 +59,12 @@ class TriWindow(QtWidgets.QWidget):
                         if info[4] == 4:
                             run[4] = info
 
-                rw = RunWidget(run_type='prel', run_num=r_num, run_participants=run)
+                rw = RunWidget(run_num=r_num, run_participants=run, dbhandler=self.db)
                 rw.neededit.connect(self.edit_run)
                 self.prel_runs_vbox.addWidget(rw)
 
-    def edit_run(self, num):
-        print('SIGNAL: ', num)
-        pprint.pprint(self.db.get_participants_by_run_number(num))
-        self.edit_window = EditPrelRun(self.db)
+    def edit_run(self, num, cat_name, p1, p2, p3, p4, s1, s2, s3, s4, r1, r2, r3, r4, t1, t2, t3, t4):
+        self.edit_window = EditPrelRun(self.db, info=(num, cat_name, p1, p2, p3, p4, s1, s2, s3, s4, r1, r2, r3, r4, t1, t2, t3, t4))
         self.edit_window.show()
         self.edit_window.wannaclose.connect(self.update_prel_runs)
 
