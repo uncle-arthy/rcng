@@ -225,3 +225,111 @@ class DBHandler(object):
             return True
         except:
             return False
+
+    def get_next_second_run_number(self):
+        qry = self.cur.execute('SELECT MAX(DISTINCT prel_run) FROM participants')
+
+        prel_max = qry.fetchone()[0]
+
+        qry = self.cur.execute('SELECT MAX(DISTINCT semi_run) FROM participants')
+
+        semi_max = qry.fetchone()[0]
+
+        if semi_max:
+            return prel_max + semi_max + 1
+        else:
+            return prel_max + 1
+
+    def register_second_run(self, run_dict):
+        run_number = run_dict['num']
+
+        try:
+            if run_dict['first_id'] != 0:
+                self.cur.execute('''UPDATE participants
+                SET semi_run = ?, semi_jacket = 1, semi_result = 1
+                WHERE participants.id = ?
+                ''', (run_number, run_dict['first_id']))
+
+            if run_dict['second_id'] != 0:
+                self.cur.execute('''UPDATE participants
+                SET semi_run = ?, semi_jacket = 2, semi_result = 1
+                WHERE participants.id = ?
+                ''', (run_number, run_dict['second_id']))
+
+            if run_dict['third_id'] != 0:
+                self.cur.execute('''UPDATE participants
+                SET semi_run = ?, semi_jacket = 3, semi_result = 1
+                WHERE participants.id = ?
+                ''', (run_number, run_dict['third_id']))
+
+            if run_dict['fourth_id'] != 0:
+                self.cur.execute('''UPDATE participants
+                SET semi_run = ?, semi_jacket = 4, semi_result = 1
+                WHERE participants.id = ?
+                ''', (run_number, run_dict['fourth_id']))
+
+            self.conn.commit()
+            return True
+        except:
+            return False
+
+    def register_time_second_run(self, reg_dict):
+        try:
+            self.cur.execute('''UPDATE participants
+            SET semi_time = ?, semi_result = ?
+            WHERE participants.id = ?
+            ''', (reg_dict['time_1'], reg_dict['status_1'], reg_dict['num_1']))
+
+            if reg_dict['num_2'] != 0:
+                self.cur.execute('''UPDATE participants
+            SET semi_time = ?, semi_result = ?
+            WHERE participants.id = ?
+            ''', (reg_dict['time_2'], reg_dict['status_2'], reg_dict['num_2']))
+
+            if reg_dict['num_3'] != 0:
+                self.cur.execute('''UPDATE participants
+            SET semi_time = ?, semi_result = ?
+            WHERE participants.id = ?
+            ''', (reg_dict['time_3'], reg_dict['status_3'], reg_dict['num_3']))
+
+            if reg_dict['num_4'] != 0:
+                self.cur.execute('''UPDATE participants
+            SET semi_time = ?, semi_result = ?
+            WHERE participants.id = ?
+            ''', (reg_dict['time_4'], reg_dict['status_4'], reg_dict['num_4']))
+
+            self.conn.commit()
+            return True
+        except:
+            return False
+
+    def delete_semi_run(self, run_num):
+        try:
+            qry = self.cur.execute('''
+            UPDATE participants SET semi_run = NULL, semi_jacket = NULL, semi_time = NULL,
+            semi_result = 7 WHERE semi_run = ?
+            ''', (run_num, ))
+            self.conn.commit()
+            return True
+        except:
+            return False
+
+    def get_semi_runs_info(self):
+        qry = self.cur.execute('''SELECT participants.id, 
+        dogs.name, 
+        categories.name, 
+        participants.semi_run, 
+        participants.semi_jacket, 
+        participants.semi_time,
+        participants.semi_result,
+        participants.semi_comments
+        FROM participants INNER JOIN dogs ON participants.dog_id = dogs.id
+        INNER JOIN categories ON participants.category_id = categories.id
+        WHERE participants.semi_result != 7 
+        ORDER BY participants.semi_jacket
+        ''')
+
+        runs_info_list = qry.fetchall()
+
+        return runs_info_list
+

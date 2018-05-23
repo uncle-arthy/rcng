@@ -6,9 +6,9 @@ __author__ = 'Alexei Evdokimov'
 import sys
 import pprint
 from sqlite_handler import DBHandler
-from add_prel_run_window import AddPrelRunWindow
+from add_prel_run_window import AddPrelRunWindow, AddSecondRunWindow
 from run_widget import RunWidget
-from edit_prel_run import EditPrelRun
+from edit_prel_run import EditPrelRun, EditSecondRun
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
 
@@ -25,8 +25,16 @@ class TriWindow(QtWidgets.QWidget):
         self.prel_runs_frame.setLayout(self.prel_runs_vbox)
         self.prel_scroll_area.setWidget(self.prel_runs_frame)
 
+        self.semi_runs_frame = QtWidgets.QFrame()
+        self.semi_runs_vbox = QtWidgets.QVBoxLayout()
+        self.semi_runs_frame.setLayout(self.semi_runs_vbox)
+        self.semi_scroll_area.setWidget(self.semi_runs_frame)
+
         self.btn_add_prel_run.clicked.connect(self.add_prel_run)
+        self.btn_add_semi_run.clicked.connect(self.add_semi_run)
+        self.btn_add_final_run.clicked.connect(self.add_final_run)
         self.update_prel_runs()
+        self.update_semi_runs()
 
     def add_prel_run(self):
         self.add_prel_window = AddPrelRunWindow(self.db)
@@ -67,6 +75,51 @@ class TriWindow(QtWidgets.QWidget):
         self.edit_window = EditPrelRun(self.db, info=(num, cat_name, p1, p2, p3, p4, s1, s2, s3, s4, r1, r2, r3, r4, t1, t2, t3, t4))
         self.edit_window.show()
         self.edit_window.wannaclose.connect(self.update_prel_runs)
+
+    def add_semi_run(self):
+        # TODO: reimplement semifinal to FCI rules
+        print('adding semi run')
+        self.add_second_window = AddSecondRunWindow(self.db)
+        self.add_second_window.show()
+        self.add_second_window.wannaclose.connect(self.update_semi_runs)
+
+    def update_semi_runs(self):
+        print('update')
+        self.semi_runs_frame.destroy()
+
+        self.semi_runs_frame = QtWidgets.QFrame()
+        self.semi_runs_vbox = QtWidgets.QVBoxLayout()
+        self.semi_runs_frame.setLayout(self.semi_runs_vbox)
+        self.semi_scroll_area.setWidget(self.semi_runs_frame)
+
+        semi_runs_info = self.db.get_semi_runs_info()
+
+        if len(semi_runs_info) > 0:
+            for r_num in range(1, self.db.get_next_second_run_number()):
+                run = [None, None, None, None, None]
+                for info in semi_runs_info:
+                    if info[3] == r_num:
+                        run[0] = info[2]
+                        if info[4] == 1:
+                            run[1] = info
+                        if info[4] == 2:
+                            run[2] = info
+                        if info[4] == 3:
+                            run[3] = info
+                        if info[4] == 4:
+                            run[4] = info
+
+                rw = RunWidget(run_num=r_num, run_participants=run, dbhandler=self.db)
+                rw.neededit.connect(self.edit_second_run)
+                self.semi_runs_vbox.addWidget(rw)
+
+    def edit_second_run(self, num, cat_name, p1, p2, p3, p4, s1, s2, s3, s4, r1, r2, r3, r4, t1, t2, t3, t4):
+        self.edit_window = EditSecondRun(self.db, info=(num, cat_name, p1, p2, p3, p4, s1, s2, s3, s4, r1, r2, r3, r4, t1, t2, t3, t4))
+        self.edit_window.show()
+        self.edit_window.wannaclose.connect(self.update_semi_runs)
+
+    def add_final_run(self):
+        print('adding final run')
 
 
 if __name__ == '__main__':
