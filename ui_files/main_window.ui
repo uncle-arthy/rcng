@@ -51,7 +51,15 @@
     </property>
     <addaction name="actionSummary"/>
    </widget>
+   <widget class="QMenu" name="menuAdd">
+    <property name="title">
+     <string>Add</string>
+    </property>
+    <addaction name="actionDog"/>
+    <addaction name="actionParticipant"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuAdd"/>
    <addaction name="menuReports"/>
    <addaction name="menuAbout"/>
   </widget>
@@ -73,6 +81,22 @@
   <action name="actionSummary">
    <property name="text">
     <string>Summary...</string>
+   </property>
+  </action>
+  <action name="actionDog">
+   <property name="text">
+    <string>Dog</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionParticipant">
+   <property name="text">
+    <string>Participant</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+D</string>
    </property>
   </action>
  </widget>

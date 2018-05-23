@@ -19,7 +19,7 @@
   <property name="windowTitle">
    <string>Run time register</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" columnstretch="1,7,2,1,0">
+  <layout class="QGridLayout" name="gridLayout" columnstretch="1,7,2,1">
    <item row="0" column="0">
     <widget class="QLabel" name="lbl_run_number">
      <property name="sizePolicy">
@@ -262,9 +262,6 @@
    </item>
    <item row="3" column="2">
     <widget class="QLineEdit" name="inp_second_time">
-     <property name="inputMask">
-      <string>099.99</string>
-     </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
@@ -362,9 +359,6 @@
    </item>
    <item row="5" column="2">
     <widget class="QLineEdit" name="inp_fourth_time">
-     <property name="inputMask">
-      <string>099.99</string>
-     </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
@@ -372,9 +366,6 @@
    </item>
    <item row="2" column="2">
     <widget class="QLineEdit" name="inp_first_time">
-     <property name="inputMask">
-      <string>099.99</string>
-     </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
@@ -385,9 +376,6 @@
    </item>
    <item row="4" column="2">
     <widget class="QLineEdit" name="inp_third_time">
-     <property name="inputMask">
-      <string>099.99</string>
-     </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
@@ -418,9 +406,6 @@
    </item>
    <item row="6" column="2">
     <widget class="QLineEdit" name="inp_fifth_time">
-     <property name="inputMask">
-      <string>099.99</string>
-     </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
@@ -428,9 +413,6 @@
    </item>
    <item row="7" column="2">
     <widget class="QLineEdit" name="inp_sixth_time">
-     <property name="inputMask">
-      <string>099.99</string>
-     </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>

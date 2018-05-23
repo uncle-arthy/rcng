@@ -90,7 +90,7 @@ class AddSecondRunWindow(QtWidgets.QWidget):
         self.cb_category.activated.connect(self.update_dog_names_from_category)
 
     def update_dog_names_from_category(self, t):
-        dog_names_list = self.db.get_dog_for_prel_run(t+1)
+        dog_names_list = self.db.get_dog_for_second_run(t+1)
 
         for i, name in dog_names_list:
             print(i, name)

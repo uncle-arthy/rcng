@@ -3,6 +3,7 @@
 __author__ = 'Alexei Evdokimov'
 
 import sqlite3 as sqlite
+import operator
 
 
 class DBHandler(object):
@@ -151,7 +152,7 @@ class DBHandler(object):
         participants.prel_jacket, 
         participants.prel_time,
         participants.prel_result,
-        participants.prel_comments
+        participants.prel_place
         FROM participants INNER JOIN dogs ON participants.dog_id = dogs.id
         INNER JOIN categories ON participants.category_id = categories.id
         WHERE participants.prel_result != 7 
@@ -191,24 +192,44 @@ class DBHandler(object):
             SET prel_time = ?, prel_result = ?
             WHERE participants.id = ?
             ''', (reg_dict['time_1'], reg_dict['status_1'], reg_dict['num_1']))
+            if reg_dict['status_1'] in (4, 5, 6):
+                self.cur.execute('''UPDATE participants
+                            SET semi_result = ?, final_result = ?
+                            WHERE participants.id = ?
+                            ''', (reg_dict['status_1'], reg_dict['status_1'], reg_dict['num_1']))
 
             if reg_dict['num_2'] != 0:
                 self.cur.execute('''UPDATE participants
             SET prel_time = ?, prel_result = ?
             WHERE participants.id = ?
             ''', (reg_dict['time_2'], reg_dict['status_2'], reg_dict['num_2']))
+                if reg_dict['status_2'] in (4, 5, 6):
+                    self.cur.execute('''UPDATE participants
+                                SET semi_result = ?, final_result = ?
+                                WHERE participants.id = ?
+                                ''', (reg_dict['status_2'], reg_dict['status_2'], reg_dict['num_2']))
 
             if reg_dict['num_3'] != 0:
                 self.cur.execute('''UPDATE participants
             SET prel_time = ?, prel_result = ?
             WHERE participants.id = ?
             ''', (reg_dict['time_3'], reg_dict['status_3'], reg_dict['num_3']))
+                if reg_dict['status_3'] in (4, 5, 6):
+                    self.cur.execute('''UPDATE participants
+                                SET semi_result = ?, final_result = ?
+                                WHERE participants.id = ?
+                                ''', (reg_dict['status_3'], reg_dict['status_3'], reg_dict['num_3']))
 
             if reg_dict['num_4'] != 0:
                 self.cur.execute('''UPDATE participants
             SET prel_time = ?, prel_result = ?
             WHERE participants.id = ?
             ''', (reg_dict['time_4'], reg_dict['status_4'], reg_dict['num_4']))
+                if reg_dict['status_4'] in (4, 5, 6):
+                    self.cur.execute('''UPDATE participants
+                                SET semi_result = ?, final_result = ?
+                                WHERE participants.id = ?
+                                ''', (reg_dict['status_4'], reg_dict['status_4'], reg_dict['num_4']))
 
             self.conn.commit()
             return True
@@ -236,7 +257,7 @@ class DBHandler(object):
         semi_max = qry.fetchone()[0]
 
         if semi_max:
-            return prel_max + semi_max + 1
+            return semi_max + 1
         else:
             return prel_max + 1
 
@@ -279,24 +300,44 @@ class DBHandler(object):
             SET semi_time = ?, semi_result = ?
             WHERE participants.id = ?
             ''', (reg_dict['time_1'], reg_dict['status_1'], reg_dict['num_1']))
+            if reg_dict['status_1'] in (4, 5, 6):
+                self.cur.execute('''UPDATE participants
+                            SET final_result = ?
+                            WHERE participants.id = ?
+                            ''', (reg_dict['status_1'], reg_dict['num_1']))
 
             if reg_dict['num_2'] != 0:
                 self.cur.execute('''UPDATE participants
             SET semi_time = ?, semi_result = ?
             WHERE participants.id = ?
             ''', (reg_dict['time_2'], reg_dict['status_2'], reg_dict['num_2']))
+                if reg_dict['status_2'] in (4, 5, 6):
+                    self.cur.execute('''UPDATE participants
+                                SET final_result = ?
+                                WHERE participants.id = ?
+                                ''', (reg_dict['status_2'], reg_dict['num_2']))
 
             if reg_dict['num_3'] != 0:
                 self.cur.execute('''UPDATE participants
             SET semi_time = ?, semi_result = ?
             WHERE participants.id = ?
             ''', (reg_dict['time_3'], reg_dict['status_3'], reg_dict['num_3']))
+                if reg_dict['status_3'] in (4, 5, 6):
+                    self.cur.execute('''UPDATE participants
+                                SET final_result = ?
+                                WHERE participants.id = ?
+                                ''', (reg_dict['status_3'], reg_dict['num_3']))
 
             if reg_dict['num_4'] != 0:
                 self.cur.execute('''UPDATE participants
             SET semi_time = ?, semi_result = ?
             WHERE participants.id = ?
             ''', (reg_dict['time_4'], reg_dict['status_4'], reg_dict['num_4']))
+                if reg_dict['status_4'] in (4, 5, 6):
+                    self.cur.execute('''UPDATE participants
+                                SET final_result = ?
+                                WHERE participants.id = ?
+                                ''', (reg_dict['status_4'], reg_dict['num_4']))
 
             self.conn.commit()
             return True
@@ -322,7 +363,7 @@ class DBHandler(object):
         participants.semi_jacket, 
         participants.semi_time,
         participants.semi_result,
-        participants.semi_comments
+        participants.semi_place
         FROM participants INNER JOIN dogs ON participants.dog_id = dogs.id
         INNER JOIN categories ON participants.category_id = categories.id
         WHERE participants.semi_result != 7 
@@ -333,3 +374,106 @@ class DBHandler(object):
 
         return runs_info_list
 
+    def get_dog_for_second_run(self, cat_id):
+        qry = self.cur.execute('''SELECT participants.id, dogs.name 
+        FROM participants INNER JOIN dogs 
+        ON participants.dog_id = dogs.id 
+        WHERE participants.category_id = ? AND participants.semi_result = 7''', (cat_id, ))
+
+        names_ids = []
+
+        for line in qry.fetchall():
+            names_ids.append((line[0], line[1]))
+
+        return names_ids
+
+    def get_second_participants_summary(self):
+        participants = []
+
+        qry = self.cur.execute('''SELECT participants.id, dogs.name, categories.name, 
+        participants.prel_time, participants.prel_result, participants.prel_place,
+        participants.semi_time, participants.semi_result, participants.semi_place,
+        participants.final_time, participants.final_result, participants.final_place
+        FROM participants INNER JOIN dogs ON participants.dog_id = dogs.id 
+        INNER JOIN categories ON participants.category_id = categories.id''')
+
+        for line in qry.fetchall():
+            num = line[0]
+            name = line[1]
+            category = line[2]
+            fin_place = ' '
+            prel_place = ' '
+            time_1 = ' '
+            if line[4] == 2:
+                time_1 = self.pretty_time(str(line[3]))
+            elif line[4] == 4:
+                time_1 = 'ДИСКВ'
+            elif line[4] == 5:
+                time_1 = 'СВ'
+            elif line[4] == 6:
+                time_1 = 'СНЯТ'
+
+            time_2 = ' '
+            if line[7] == 2:
+                time_2 = self.pretty_time(str(line[6]))
+            elif line[7] == 4:
+                time_2 = 'ДИСКВ'
+            elif line[7] == 5:
+                time_2 = 'СВ'
+            elif line[7] == 6:
+                time_2 = 'СНЯТ'
+
+            time_fin = ' '
+            if line[10] == 2:
+                time_fin = self.pretty_time(str(line[9]))
+                fin_place = line[11]
+            elif line[10] == 4:
+                time_fin = 'ДИСКВ'
+            elif line[10] == 5:
+                time_fin = 'СВ'
+            elif line[10] == 6:
+                time_fin = 'СНЯТ'
+
+            best_prel_time = ' '
+
+            if line[4] == 2 and line[7] == 2:
+                best_prel_time = self.pretty_time(min(line[3], line[6]))
+                prel_place = line[8] if line[8] else '---'
+
+            participants.append((num, name, category, time_1, time_2, best_prel_time, prel_place, time_fin, fin_place))
+
+        return participants
+
+    def update_places(self):
+        categories_qry = self.cur.execute('SELECT * FROM categories')
+        cat_list = categories_qry.fetchall()
+
+        for category, _ in cat_list:
+            qry = self.cur.execute('''SELECT participants.id, participants.prel_time, participants.semi_time
+            FROM participants
+            WHERE participants.category_id = ? AND
+            participants.prel_result = 2 AND
+            participants.semi_result = 2 
+            ''', (category, ))
+
+            part_list = qry.fetchall()
+            part_min_list = [(p[0], min(p[1], p[2])) for p in part_list]
+            part_min_list.sort(key=operator.itemgetter(1))
+
+            for place, participant in enumerate(part_min_list, start=1):
+                self.cur.execute('''UPDATE participants
+                SET semi_place = ?
+                WHERE id = ?
+                ''', (place, participant[0]))
+
+        self.conn.commit()
+
+    def pretty_time(self, time_int):
+        s = str(time_int)
+        return s[:-2] + '.' + s[-2:]
+
+    def add_final_run(self, cat_num):
+        pass
+
+    def get_final_runs_info(self):
+        pass

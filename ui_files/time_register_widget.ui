@@ -290,7 +290,7 @@
    <item row="2" column="2">
     <widget class="QLineEdit" name="inp_first_time">
      <property name="inputMask">
-      <string>099.99</string>
+      <string/>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -342,9 +342,6 @@
    </item>
    <item row="3" column="2">
     <widget class="QLineEdit" name="inp_second_time">
-     <property name="inputMask">
-      <string>099.99</string>
-     </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
@@ -352,9 +349,6 @@
    </item>
    <item row="4" column="2">
     <widget class="QLineEdit" name="inp_third_time">
-     <property name="inputMask">
-      <string>099.99</string>
-     </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
@@ -362,9 +356,6 @@
    </item>
    <item row="5" column="2">
     <widget class="QLineEdit" name="inp_fourth_time">
-     <property name="inputMask">
-      <string>099.99</string>
-     </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>

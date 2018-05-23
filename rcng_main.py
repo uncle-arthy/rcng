@@ -6,6 +6,8 @@ import sys
 from work_triwindow import TriWindow
 from sqlite_handler import DBHandler
 from summary import SummaryWindow
+from add_participant import AddParticipantWindow
+from add_dog_to_db import AddDogWindow
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
 
@@ -31,6 +33,8 @@ class RSNG(QtWidgets.QMainWindow):
     def start_work(self):
         triwin = TriWindow(self.db)
         self.setCentralWidget(triwin)
+        self.actionDog.triggered.connect(self.add_dog)
+        self.actionParticipant.triggered.connect(self.add_participant)
 
     def show_summary(self):
         self.sum_window = SummaryWindow(self.db)
@@ -44,6 +48,14 @@ class RSNG(QtWidgets.QMainWindow):
 
     def about_window(self):
         print('Here goes About...')
+
+    def add_dog(self):
+        self.adw = AddDogWindow(self.db)
+        self.adw.show()
+
+    def add_participant(self):
+        self.apw = AddParticipantWindow(self.db)
+        self.apw.show()
 
 
 if __name__ == '__main__':

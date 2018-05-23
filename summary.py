@@ -13,7 +13,10 @@ class SummaryWindow(QtWidgets.QWidget):
 
         self.db = dbhandler
 
-        uic.loadUi('ui_files/summary_window.ui', self)
+        uic.loadUi('ui_files/summary_second_window.ui', self)
+
+        self.btn_refresh.clicked.connect(self.fill_up_table)
+        self.btn_make_places.clicked.connect(self.update_places)
 
         self.pretty_table()
         self.fill_up_table()
@@ -26,30 +29,26 @@ class SummaryWindow(QtWidgets.QWidget):
         self.summaryTable.horizontalHeaderItem(6).setTextAlignment(QtCore.Qt.AlignHCenter)
         self.summaryTable.horizontalHeaderItem(7).setTextAlignment(QtCore.Qt.AlignHCenter)
         self.summaryTable.horizontalHeaderItem(8).setTextAlignment(QtCore.Qt.AlignHCenter)
-        self.summaryTable.horizontalHeaderItem(9).setTextAlignment(QtCore.Qt.AlignHCenter)
-        self.summaryTable.horizontalHeaderItem(10).setTextAlignment(QtCore.Qt.AlignHCenter)
-        self.summaryTable.horizontalHeaderItem(11).setTextAlignment(QtCore.Qt.AlignHCenter)
 
         header = self.summaryTable.horizontalHeader()
         header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
         header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
 
     def fill_up_table(self):
-        sum_list = self.db.get_participants_summary()
+        sum_list = self.db.get_second_participants_summary()
 
         self.summaryTable.setRowCount(len(sum_list))
 
         for i, participant in enumerate(sum_list):
-            for j in range(12):
+            for j in range(9):
                 self.summaryTable.setItem(i, j, QtWidgets.QTableWidgetItem(str(participant[j])))
                 self.summaryTable.item(i, j).setTextAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
             self.summaryTable.item(i, 1).setTextAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
             self.summaryTable.item(i, 2).setTextAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
-            if participant[3] is None:
-                self.summaryTable.setItem(i, 3, QtWidgets.QTableWidgetItem(' '))
-            if participant[4] is None:
-                self.summaryTable.setItem(i, 4, QtWidgets.QTableWidgetItem(' '))
 
+    def update_places(self):
+        self.db.update_places()
+        self.fill_up_table()
 
 
 if __name__ == '__main__':

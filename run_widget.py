@@ -98,9 +98,12 @@ class RunWidget(QtWidgets.QWidget):
         return 'N/A'
 
     def pretty_time(self, time_int):
-        s = str(time_int)
 
-        return s[:-2] + '.' + s[-2:]
+        if time_int:
+            s = str(time_int)
+
+            return s[:-2] + '.' + s[-2:]
+        return ''
 
 
 class Runs(QtWidgets.QWidget):

@@ -30,6 +30,11 @@ class TriWindow(QtWidgets.QWidget):
         self.semi_runs_frame.setLayout(self.semi_runs_vbox)
         self.semi_scroll_area.setWidget(self.semi_runs_frame)
 
+        self.final_runs_frame = QtWidgets.QFrame()
+        self.final_runs_vbox = QtWidgets.QVBoxLayout()
+        self.final_runs_frame.setLayout(self.final_runs_vbox)
+        self.final_scroll_area.setWidget(self.final_runs_frame)
+
         self.btn_add_prel_run.clicked.connect(self.add_prel_run)
         self.btn_add_semi_run.clicked.connect(self.add_semi_run)
         self.btn_add_final_run.clicked.connect(self.add_final_run)
@@ -95,7 +100,7 @@ class TriWindow(QtWidgets.QWidget):
         semi_runs_info = self.db.get_semi_runs_info()
 
         if len(semi_runs_info) > 0:
-            for r_num in range(1, self.db.get_next_second_run_number()):
+            for r_num in range(self.db.get_next_prel_run_number(), self.db.get_next_second_run_number()):
                 run = [None, None, None, None, None]
                 for info in semi_runs_info:
                     if info[3] == r_num:
@@ -120,7 +125,26 @@ class TriWindow(QtWidgets.QWidget):
 
     def add_final_run(self):
         print('adding final run')
+        cat_names = [c[1] for c in self.db.get_categories()]
 
+        cat_choose, ok = QtWidgets.QInputDialog.getItem(self, 'Final Run for...', 'Choose', cat_names)
+
+        if ok:
+            print(cat_names.index(cat_choose) + 1)
+            print(cat_choose)
+            if self.db.add_final_run(cat_names.index(cat_choose) + 1):
+                self.update_final_runs()
+
+    def update_final_runs(self):
+        print('update')
+        self.semi_runs_frame.destroy()
+
+        self.final_runs_frame = QtWidgets.QFrame()
+        self.final_runs_vbox = QtWidgets.QVBoxLayout()
+        self.final_runs_frame.setLayout(self.final_runs_vbox)
+        self.final_scroll_area.setWidget(self.final_runs_frame)
+
+        final_runs_info = self.db.get_final_runs_info()
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
